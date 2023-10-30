@@ -1,26 +1,30 @@
 #!/bin/bash
 
-echo "Before continuing with this script, three things are necessary:"
-echo -e "First make sure that the certificate zip file is in the /home/cpt directory."'\n'
-read -p 'It is there? Yn :  ' cert
+Blue=$(tput setaf 27)
+Green=$(tput setaf 10)
+Red=$(tput setaf 1)
+
+echo "${Red}Before continuing with this script, three things are necessary:"
+echo -e "${Red}First make sure that the certificate zip file is in the /home/cpt directory."'\n'
+read -p "${Red}It is there? Yn :  " cert
 
 if [[ $cert == 'n' ]]; then
 	echo "Put the zip file in /home/cpt and restart this script."
 	exit
 fi
 
-echo -e "Second, run apt update and apt install golang-go"
-read -p 'Did you do this? Yn :  ' golang
+echo -e "${Red}Second, run apt update and apt install golang-go"
+read -p "${Red}Did you do this? Yn :  " golang
 
 if [[ $golang == 'n' ]]; then
 	echo "Update your system and install golang."
 	exit
 fi
 
-echo -e '\n'"Third, what is the domain you are using for this engagement?"
-read -p 'The format should be "domain.com":  ' domain
+echo -e '\n'"${Red}Third, what is the domain you are using for this engagement?"
+read -p "${Red}The format should be domain.com:  " domain
 
-echo -e 'Pulling the gophish repo'\n''
+echo -e "${Green}Pulling the gophish repo'\n'"
 git clone https://github.com/gophish/gophish.git
 
 #unzipping the zip with the certs in it
@@ -74,12 +78,10 @@ sleep 2
 dkim=$(docker-compose -f ~/pca-gophish-composition/docker-compose.yml logs postfix | grep -A1 "DKIM1" | awk -F 'p=' '{print $2}' | cut -d '"' -f 1 | awk NF | tail -n1)
 
 echo $dkim > dkim.txt
-echo "Insert the value below as your DKIM record:"
-echo -e $dkim '\n'
+echo -e '\n'"${Green}Insert the value below as your DKIM record:"
+echo -e ${Green} $dkim '\n'
 
-echo -e '\n'"Everything should be set up. Navigate to Gophish using your bookmark and make sure everything works!"'\n'
-
-echo "If your server doesn't start or something doesn't work, double check the names"
-echo "and locations of the certificates, as well as the respective config files. To check"
-echo "this manually, consult the gitlab gophish guide. Revert to the gold snapshot if this server is FUBAR."
-echo -e "If there is an error with this script, please reach out to OS1 Miller and tell him his script sucks (and the error you had). Thanks!"
+echo -e '\n'"${Blue}The postfix container is running and the gophish binary is built."'\n'
+echo -e '\n'"${Blue}When making a sending profile, the SMTP server should be 172.16.202.2:587."'\n'
+echo -e '\n'"${Blue}Run the gophish binary in a pseudo terminal and make note of the initial password."'\n'
+echo -e '\n'"${Blue}If you want to COMPLETELY strip gophish IOCs from your email, rename this vm using \"sudo hostname <new hostname>\"."'\n'
