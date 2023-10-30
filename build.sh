@@ -54,7 +54,7 @@ sed -i 's/X-Gophish-Signature/X-Signature/g' webhook/webhook.go
 # Changing server name
 sed -i 's/const ServerName = "gophish"/const ServerName = "IGNORE"/' config/config.go
 #Changing rid value
-sed -i 's/const RecipientParameter = "rid"/const RecipientParameter = "request"/g' models/campaign.go
+sed -i 's/const RecipientParameter = "rid"/const RecipientParameter = "userID"/g' models/campaign.go
 go build
 cd ~
 
